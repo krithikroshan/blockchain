@@ -1,0 +1,26 @@
+{
+  "name": "scAPI",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "deploy": "serverless deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@zilliqa-js/util": "^3.1.0",
+    "@zilliqa-js/zilliqa": "^3.1.0",
+    "aws-serverless-express": "^3.4.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.12",
+    "serverless": "^2.61.0",
+    "serverless-http": "^2.7.0",
+    "tslib": "^2.3.1",
+    "zilliqa-js": "^0.1.19"
+  }
+}
