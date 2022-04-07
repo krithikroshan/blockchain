@@ -1,0 +1,9 @@
+.tickets_view_wrapper {
+  width: 80%;
+  margin: auto;
+  margin-top: 24px;
+}
+
+.tickets_view_wrapper h1 h2 h3 h4 hr{
+  color: #343a40;
+}
