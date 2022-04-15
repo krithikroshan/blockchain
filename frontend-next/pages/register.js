@@ -130,11 +130,11 @@ function Registration() {
             >
               <Input.Password />
             </Form.Item>
-            <p style={{ margin: 0, marginTop: 5 }}>
+            {/* <p style={{ margin: 0, marginTop: 5 }}>
               <Link style={{ textAlign: "left", marginTop: 20 }}>
                 Forgot password?
               </Link>
-            </p>
+            </p> */}
             <Form.Item>
               <Button
                 block

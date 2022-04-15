@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import axios from 'axios'
 import {
   Form,
   Input,
@@ -38,23 +39,24 @@ export default function Create(props) {
   const currentUser = useSelector((state) => state.currentUser);
 
   const onSubmit = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        console.log("HELLo");
-        console.log(values);
-        setLoading(true)
-        fetch(`${API_BASE_URL}/events`, {
-          body: JSON.stringify({
-              location: {
-                name: values.venue_name,
-                address_line1: values.address_line1,
-                address_line2: values.address_line2,
-                city: values.city,
-                state: values.state,
-                postal_code: values.postal_code,
-                country: values.country,
-              },
+    form.validateFields().then((values) => {
+      console.log("HELLo");
+      console.log(values);
+      setLoading(true);
+
+      axios
+        .post(
+          `${API_BASE_URL}/events/`,
+          {
+            location: {
+              name: values.venue_name,
+              address_line1: values.address_line1,
+              address_line2: values.address_line2,
+              city: values.city,
+              state: values.state,
+              postal_code: values.postal_code,
+              country: values.country,
+            },
             name: values.name,
             event_category: values.category,
             event_type: values.event_type,
@@ -62,36 +64,25 @@ export default function Create(props) {
             start_time: moment(values.start_time).format("hh:mm"),
             end_date: moment(values.end_date).format("YYYY-MM-DD"),
             end_time: moment(values.end_time).format("hh:mm"),
-          }),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + currentUser.user.access_token,
           },
-          method: "POST",
-        }).then((res) => {
-          console.log("DONE");
-          if (res.ok) {
-            res
-              .json()
-              .then((data) => ({
-                data: data,
-                status: res.status,
-              }))
-              .then((body) => {
-                var id = body.data.id;
-                router.push(`/manage/events/${id}/details`);
-                setLoading(false);
-              });
-          } else {
-            setLoading(false);
-            console.log(res);
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + currentUser.user.access_token,
+            },
           }
+        )
+        .then((res) => {
+          console.log("DONE");
+          var id = res.data.id;
+          router.push(`/manage/events/${id}/details`);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err)
+          setLoading(false);
         });
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
+    });
   };
 
   useEffect(() => {

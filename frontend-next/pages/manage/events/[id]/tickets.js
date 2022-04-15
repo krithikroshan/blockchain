@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import axios from 'axios'
 import { useRouter } from 'next/router'
 import { Form, Drawer, Select, Radio, DatePicker, TimePicker, Row, Col, Button } from 'antd'
 import Layout from '../../../../components/Manage/Layout'
@@ -20,6 +21,18 @@ export default function Tickets(event) {
     const [visible, setVisible ] = useState(false)
 
     const currentUser = useSelector((state) => state.currentUser);
+
+    const [name, setName] = useState("General Admission")
+    const [price, setPrice] = useState(null)
+    const [quantity, setQuantity] = useState(null)
+    const [start_date, setStartDate] = useState(moment())
+    const [start_time, setStartTime] = useState(moment('12:00', 'HH:mm'))
+    const [end_date, setEndDate] = useState(moment())
+    const [end_time, setEndTime] = useState(moment('18:00', 'HH:mm'))
+    const [min, setMin] = useState(1)
+    const [max, setMax] = useState(10)
+    const [wallets, setWallets] = useState(10)
+    const [resale, setResale] = useState("None")
 
     useEffect(()=>{
         form.setFieldsValue({
@@ -43,39 +56,39 @@ export default function Tickets(event) {
     }
 
     const onSave = () => {
-        form.validateFields()
-        .then((values) => {
+        console.log("clicked save")
+        // // form.validateFields()
+        // .then((values) => {
+            console.log(name, price, quantity, start_date, start_time, end_date, end_time)
+            console.log(wallets)
+            // var wallets2 = [...wallets]
+            // wallets2.push(wallet)
 
-            var wallets = [...values.wallets]
-            wallets.push(values.wallet)
-
-            console.log(values)
             console.log(event)
             console.log(event.event.id)
-            fetch(`${API_BASE_URL}/events/ticket/create`,
-            {
-                body: JSON.stringify({
-                    event: event.event.id,
-                    name: values.name,
-                    quantity: values.quantity,
-                    payment: values.payment,
-                    price: values.price,
-                    sale_start: moment(values.start_date).format('YYYY-MM-DD') + 'T' + moment(values.start_time).format('hh:mm') + 'Z',
-                    sale_end: moment(values.end_date).format('YYYY-MM-DD') + 'T' + moment(values.end_time).format('hh:mm') + 'Z',
-                    description: values.description,
-                    min: values.min,
-                    max: values.max, 
-                    resale_permissions: values.resale,
-                    resale_wallets: wallets.toString()
-                  }),
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer '+ currentUser.user.access_token
-                  },
-                  method: 'POST'
-            })
-            .then(res => console.log(res))
-        })
+            axios
+        .post(`${API_BASE_URL}/events/${event.event.id}/ticket_types`,
+        {
+            event: event.event.id,
+            name: name,
+            total_quantity: quantity,
+            available_quantity: quantity,
+            payment: "Paid",
+            price: price,
+            sale_start: moment(start_date).format('YYYY-MM-DD') + 'T' + moment(start_time).format('hh:mm') + 'Z',
+            sale_end: moment(end_date).format('YYYY-MM-DD') + 'T' + moment(end_time).format('hh:mm') + 'Z',
+            description: "description",
+            min: min,
+            max: max, 
+            resale_permissions: resale
+            // resale_wallets: "0x"
+          }, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + currentUser.user.access_token,
+            },
+          }).then((res) => {console.log(res)})
+        // }).catch(err => console.log("err", err))
     }
 
     return (
@@ -105,7 +118,7 @@ export default function Tickets(event) {
                     </div>
                   }>
 
-                  <Ticket form={form}/>
+                  <Ticket form={form} setName={setName} setPrice={setPrice} setStartDate={setStartDate} setStartTime={setStartTime} setQuantity={setQuantity} setEndDate={setEndDate} setEndTime={setEndTime} setWallets={setWallets} setResale={setResale} resale={resale} wallets={wallets}/>
                 </Drawer>
             </div>
         </Layout>

@@ -7,7 +7,9 @@ const serverless = require('serverless-http');
 const app = express() ; 
 const port = process.env.PORT || 4000 ; 
 
-const testRouter = require("./test") ; 
+const polygonRouter = require('./polygon/routers')
+
+// const testRouter = require("./test") ; 
 const miscRouter = require("./scRouters/misc") ; 
 const ticketRouter = require("./scRouters/ticket")
 

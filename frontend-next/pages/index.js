@@ -1,10 +1,7 @@
-import Head from 'next/head'
-import Image from 'next/image'
 import Event from '../components/Home/Event'
 import Layout from '../components/Common/Layout'
-import {useSelector, useDispatch} from 'react-redux'
-import allActions from '../redux/actions'
-import React, {useEffect} from 'react'
+import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
 import { API_BASE_URL } from '../constants/apiConstants'
 
 // External components

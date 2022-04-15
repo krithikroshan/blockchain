@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useContext } from "react";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import { useSelector, useDispatch } from "react-redux";
 import allActions from "../redux/actions";
 import GoogleLogin from "react-google-login";
@@ -10,6 +10,7 @@ import axios from "axios";
 const { Link } = Typography;
 
 function Login() {
+  const { query } = useRouter();
   const dispatch = useDispatch();
 
   const responseGoogle = (response) => {
@@ -33,9 +34,13 @@ function Login() {
       .then((res) => {
         localStorage.setItem("userInfo", JSON.stringify(res.data));
         dispatch(allActions.userActions.setUser(res.data));
-        Router.push("/");
+        if (query?.redirect) {
+          Router.push(query?.redirectTo);
+        } else {
+          Router.push("/");
+        }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.response.data));
   };
 
   return (
@@ -44,6 +49,13 @@ function Login() {
         <Link href="/" passHref>
           <h3 style={{ textAlign: "center" }}>Access</h3>
         </Link>
+        {query.redirect ? (
+          <p style={{ textAlign: "center" }}>
+            Please login to continue! You will be redirected once you login.
+          </p>
+        ) : (
+          <></>
+        )}
         <Card style={{ width: 540, margin: "auto" }}>
           {/* <div style={{ margin: "auto", width: "100%" }}>
             <GoogleLogin
@@ -123,12 +135,12 @@ function Login() {
                   color: "white",
                 }}
               >
-                Submit
+                Login
               </Button>
             </Form.Item>
           </Form>
           <span>
-            Dont have an account? <Link href='/register'>Sign up</Link>
+            Dont have an account? <Link href="/register">Sign up</Link>
           </span>
         </Card>
       </div>
