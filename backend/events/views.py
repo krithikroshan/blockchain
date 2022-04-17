@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from users.models import User
 from .models import (AddOn, AddOnOption, Category, Event, EventPromo, Location,
                      Promo, Segment, TicketType, TicketTypeAddOn)
 from .serializers import (AddOnOptionSerializer, AddOnSerializer,
@@ -51,8 +52,30 @@ class LocationByIDView(APIView):
         Location.objects.get(id=location_id).delete()
         return Response() 
 
+@api_view(['POST'])
+def createEvent(request):
+        print("request")
+        print(request.data)
+        location_data = request.data.get('location')
+        if location_data is not None:
+            location_serializer = LocationSerializer(data=location_data)
+            if location_serializer.is_valid():
+                location_serializer.save()
+                request.data['location'] = location_serializer.data['id']
+            else:
+                print('error', location_serializer.errors)
+                return Response(location_serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+        request.data['organiser'] = User.objects.get(request.data.get('user_id'))
+        event_serializer = EventSerializer(data=request.data)
+        if event_serializer.is_valid():
+            event_serializer.save()
+            deploy.delay(event_serializer.data['id'])
+            return Response(event_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print('error', event_serializer.errors)
+            return Response(event_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class EventView(APIView):
+class EventVieww(APIView):
 
     def get(self, request):
         events = Event.objects.all()
@@ -66,6 +89,8 @@ class EventView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+        print("request")
+        print(request.data)
         location_data = request.data.get('location')
         if location_data is not None:
             location_serializer = LocationSerializer(data=location_data)
@@ -75,7 +100,7 @@ class EventView(APIView):
             else:
                 print('error', location_serializer.errors)
                 return Response(location_serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
-        request.data['organiser'] = request.user.id
+        request.data['organiser'] = User.objects.get(request.data.get('user_id'))
         event_serializer = EventSerializer(data=request.data)
         if event_serializer.is_valid():
             event_serializer.save()

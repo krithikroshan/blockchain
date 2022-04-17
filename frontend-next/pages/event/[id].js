@@ -25,13 +25,13 @@ export default function Event({ event, tickets }) {
 
   const showModal = () => {
 		console.log(currentUser)
-		if (!currentUser.loggedIn) {
-			router.push({pathname: "/login", query: {
-				redirect: true,
-				redirectTo: `/event/${event.id}`
-			}})
-			return
-		}
+		// if (!currentUser.loggedIn) {
+		// 	router.push({pathname: "/login", query: {
+		// 		redirect: true,
+		// 		redirectTo: `/event/${event.id}`
+		// 	}})
+		// 	return
+		// }
     setIsModalVisible(true);
   };
 

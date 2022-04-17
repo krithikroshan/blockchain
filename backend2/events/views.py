@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from users.models import User
 from .models import (AddOn, AddOnOption, Category, Event, EventPromo, Location,
                      Promo, Segment, TicketType, TicketTypeAddOn)
 from .serializers import (AddOnOptionSerializer, AddOnSerializer,
@@ -66,20 +67,22 @@ class EventView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        location_data = request.data.get('location')
-        if location_data is not None:
-            location_serializer = LocationSerializer(data=location_data)
-            if location_serializer.is_valid():
-                location_serializer.save()
-                request.data['location'] = location_serializer.data['id']
-            else:
-                print('error', location_serializer.errors)
-                return Response(location_serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
-        request.data['organiser'] = request.user.id
+        print("request")
+        print(request.data)
+        # location_data = request.data.get('location')
+        # if location_data is not None:
+        #     location_serializer = LocationSerializer(data=location_data)
+        #     if location_serializer.is_valid():
+        #         location_serializer.save()
+        #         request.data['location'] = location_serializer.data['id']
+        #     else:
+        #         print('error', location_serializer.errors)
+        #         return Response(location_serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+        request.data['location'] = 1
+        request.data['organiser'] = User.objects.get(id = request.data.get('user_id')).id
         event_serializer = EventSerializer(data=request.data)
         if event_serializer.is_valid():
             event_serializer.save()
-            deploy.delay(event_serializer.data['id'])
             return Response(event_serializer.data, status=status.HTTP_201_CREATED)
         else:
             print('error', event_serializer.errors)
@@ -121,6 +124,8 @@ class TicketTypeView(APIView):
         return Response(serializer.data)
 
     def post(self, request, event_id):
+        print("request")
+        print(request.data)
         if request.data.get('segment') is not None:
             segment = Segment.objects.get(id=request.data.get('segment'))
             if segment.event.id != request.data.get('event'):

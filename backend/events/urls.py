@@ -8,6 +8,7 @@ urlpatterns = [
     path('locations', views.LocationView.as_view(), name='location'),
     path('locations/<str:location_id>', views.LocationByIDView.as_view(), name='location-by-id'),
 
+    path('create', views.createEvent, name='create-event'),
     path('', views.EventView.as_view(), name='event'),
     path('<str:event_id>', views.EventByIDView.as_view(), name='event-by-id'),
 

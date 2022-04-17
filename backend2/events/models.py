@@ -31,7 +31,7 @@ class Category(models.Model):
         return self.name
 
 class Event(models.Model):
-    name                = models.CharField(max_length=128)
+    name                = models.CharField(max_length=128, null=True, blank=True)
     organiser           = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     event_type          = models.CharField(choices=EVENT_TYPES, max_length=2)
     event_category      = models.CharField(choices=EVENT_CATEGORIES, max_length=2)

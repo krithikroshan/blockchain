@@ -24,8 +24,8 @@ class Ticket(models.Model):
     status              = models.CharField(max_length=64, choices=TICKET_STATUSES, default="Purchased", blank=True, null=True)
     retrieved           = models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.ticket_type.name
+    # def __str__(self):
+    #     return self
 
 class AddOnsBought(models.Model):
     ticket              = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='add_ons', blank=True, null=True)

@@ -64,11 +64,12 @@ export default function Create(props) {
             start_time: moment(values.start_time).format("hh:mm"),
             end_date: moment(values.end_date).format("YYYY-MM-DD"),
             end_time: moment(values.end_time).format("hh:mm"),
+            user_id: 3
           },
           {
             headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + currentUser.user.access_token,
+              "Content-Type": "application/json"
+              // Authorization: "Bearer " + currentUser.user.access_token,
             },
           }
         )
