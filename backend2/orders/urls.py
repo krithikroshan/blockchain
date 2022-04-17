@@ -13,4 +13,5 @@ urlpatterns = [
 
     path('addons', views.AddOnsBoughtView.as_view(), name='add-ons-bought'),
     # path('addons/<str:add_onI>', views.AddOnsBoughtView.as_view(), name='add-ons-bought-by-id'),
+    path('details/<str:wallet>', views.getOrderDetailsByUser, name='order-details-by-user'),
 ]

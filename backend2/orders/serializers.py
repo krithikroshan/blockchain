@@ -24,3 +24,14 @@ class TicketSerializer(FlexFieldsModelSerializer):
           'ticket_type': ('events.TicketTypeSerializer'),
           'user': ('users.UserSerializer')
         }
+class ExpTicketSerializer(TicketSerializer):
+    # Inheriting from TicketSerializer as we don't want to overwrite it.
+    add_ons = AddOnsBoughtSerializer(many=True, expand = ["add_on", "add_on_option"], read_only=True)
+class CombinedSerializer(FlexFieldsModelSerializer):
+    booking_tickets = ExpTicketSerializer(many=True, expand = ["ticket_type"], read_only=True)
+    class Meta:
+        model = Booking
+        fields = '__all__'
+        expandable_fields = {
+          'event': ('events.EventSerializer'),
+        }

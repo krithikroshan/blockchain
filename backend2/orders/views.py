@@ -9,9 +9,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from users.models import User
 from orders.serializers import (AddOnsBoughtSerializer, BookingSerializer,
-                                TicketSerializer)
+                                TicketSerializer, CombinedSerializer)
 
 from .models import AddOnsBought, Booking, PromosRedeemed, Ticket
 
@@ -41,7 +41,10 @@ class BookingView(APIView):
         event = Event.objects.get(id=data.get('event'))
 
         amount = int(data.get('amount'))
-        booking = Booking.objects.create(user=request.user, amount=amount, event=event)
+        wallet_address = request.data.get('wallet_address')
+        print(wallet_address)
+        user = User.objects.get(wallet_address = "0x4f839Cd3d4EF9266E2Ffb4Ba3fDc9BCE85196ac8")
+        booking = Booking.objects.create(user=user, amount=amount, event=event)
         print("Booking done")
         token_id = data.get('token_id')
         tickets = data.get('tickets')
@@ -51,7 +54,7 @@ class BookingView(APIView):
                 ticket_type.available_quantity -= 1
                 ticket_type.save()
                 ticket_obj = Ticket.objects.create(
-                    ticket_type=ticket_type, booking=booking, user=request.user, token_id=token_id)
+                    ticket_type=ticket_type, booking=booking, user=user, token_id=token_id)
                 addons = ticket_data['addons']
                 for addon in addons:
                     add_on = AddOn.objects.get(id=addon['add_on'])
@@ -80,23 +83,6 @@ class BookingView(APIView):
                 print("Invalid ticket_type payload")
                 return Response("Invalid ticket_type payload", status=status.HTTP_400_BAD_REQUEST)
 
-        if data.get('promo') is not None:
-            promo_redeemed = PromosRedeemed.objects.create(
-                collection_promo = data.get('promo'),
-                booking = booking,
-                token_id = data.get('token_id'),
-                redeemed = True
-            )
-            promo_redeemed.save()
-
-        payment = stripe.PaymentIntent.create(
-            customer=customer,
-            payment_method=payment_method_id,
-            currency='sgd',
-            amount=amount*100,
-            confirm=True
-            )
-        booking.stripe_charge_id = payment.id
         booking.completed = True
         booking.save()
         return Response("Success")
@@ -195,3 +181,10 @@ class AddOnsBoughtView(APIView):
         else:
             print('error', serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getOrderDetailsByUser(request, wallet):
+    user = User.objects.get(wallet_address = wallet)
+    bookings = Booking.objects.filter(user= user)
+    serializer = CombinedSerializer(bookings, expand = ['event'], many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

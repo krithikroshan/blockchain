@@ -7,6 +7,7 @@ import { capitalizeFirstLetter } from "../../helper_functions/StringOperations";
 import { useRouter } from "next/router";
 import { API_BASE_URL } from "../../constants/apiConstants";
 import axios from "axios";
+import { Empty } from "antd";
 
 export default function ViewTickets({ orderDetails }) {
   const currentUser = useSelector((state) => state.currentUser);
@@ -14,36 +15,19 @@ export default function ViewTickets({ orderDetails }) {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    redirectToLogin();
     getOrderDetails();
   }, []);
-
-  useEffect(() => {
-    redirectToLogin();
-  }, [currentUser]);
 
   useEffect(() => {
     console.log("Current orders are ", orders);
   }, [orders]);
 
-  function redirectToLogin() {
-    if (!currentUser.loggedIn) {
-      router.push({
-        pathname: "/login",
-        query: {
-          redirect: true,
-          redirectTo: "/tickets/view",
-        },
-      });
-    }
-  }
 
   function getOrderDetails() {
     axios
-      .get(`${API_BASE_URL}/orders/details`, {
+      .get(`${API_BASE_URL}/orders/details/0x4f839cd3d4ef9266e2ffb4ba3fdc9bce85196ac8`, {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + currentUser.user.access_token,
+          "Content-Type": "application/json"
         },
       })
       .then((res) => {
@@ -57,35 +41,31 @@ export default function ViewTickets({ orderDetails }) {
   return (
     <Layout>
       <div className={styles.tickets_view_wrapper}>
-        <h4>
-          {(currentUser.loggedIn
-            ? capitalizeFirstLetter(currentUser.user.user.first_name) + "'s"
-            : "Your") + " Orders"}
-        </h4>
+        <h4>Your Orders</h4>
         <hr />
-        <div>
-          {orders.map((order) => {
-            if (order.booking_tickets.length > 0) {
-              return (
-                <div style={{ display: "inline-block", padding: "20px" }}>
-                  <TicketCard
-                    order={order}
-                    ticket={{
-                      eventName: "The Weeknd",
-                      image:
-                        "https://access-metaverse.s3.amazonaws.com/weeknd.jpg",
-                      time: "Oct 16, 8:00 PM ",
-                      noOfTickets: 1,
-                      retreived: false,
-                      ticketType: "Deluxe",
-                      addons: [],
-                    }}
-                  />
-                </div>
-              );
-            }
-          })}
-        </div>
+        {orders.length == 0 ? (
+          <div style={{ paddingTop: "30px" }}>
+            <Empty
+              description={
+                <span>No tickets YET! Buy a few and come back.</span>
+              }
+            />
+          </div>
+        ) : (
+          <div>
+            {orders.map((order) => {
+              if (order.booking_tickets.length > 0) {
+                return (
+                  <div style={{ display: "inline-block", padding: "20px" }}>
+                    <TicketCard
+                      order={order}
+                    />
+                  </div>
+                );
+              }
+            })}
+          </div>
+        )}
       </div>
       ;
     </Layout>

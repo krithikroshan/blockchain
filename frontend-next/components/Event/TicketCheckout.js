@@ -50,8 +50,7 @@ function TicketCheckout({
       for (const seperatedTicketId in currentTickets.seperated_tickets) {
         local_tickets.push({
           ticket_type:
-            currentTickets.seperated_tickets[seperatedTicketId]["id"],
-          addons: local_addons,
+            currentTickets.seperated_tickets[seperatedTicketId]["id"]
         });
       }
       console.log(local_tickets)
@@ -109,6 +108,7 @@ function TicketCheckout({
         amount: total,
         tickets: tickets,
         token_id: transaction.hash,
+        wallet_address: transaction.from
       })
       .then((res) => {
         setTokenId(transaction.hash)

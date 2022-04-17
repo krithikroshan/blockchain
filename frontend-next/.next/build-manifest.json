@@ -29,10 +29,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/event/[id].js"
     ],
-    "/login": [
+    "/tickets/view": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/login.js"
+      "static/chunks/pages/tickets/view.js"
     ]
   },
   "ampFirstPages": []
