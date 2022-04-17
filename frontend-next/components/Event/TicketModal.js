@@ -32,6 +32,7 @@ export default function TicketModal({
   const [form] = Form.useForm();
 
   const [addons, setAddons] = useState(null);
+  const [tokenId, setTokenId] = useState(null);
 
   var start_date = dayjs(event.start_date).format("ddd, D MMM, YYYY");
   var end_date = dayjs(event.end_date).format("ddd, D MMM, YYYY");
@@ -152,6 +153,7 @@ export default function TicketModal({
             onCheckout={onCheckout}
             selected={selected}
             commonAddons={false}
+            setTokenId={setTokenId}
           />
         ) : step === 4 ? (
           <TicketCheckout
@@ -161,6 +163,7 @@ export default function TicketModal({
             selected={selected}
             onCheckout={onCheckout}
             form={form}
+            tokenId={tokenId}
           />
         ) : step === 5 ? (
           <TicketConfirm event={event} selected={selected} form={form} />

@@ -38,34 +38,12 @@ class BookingView(APIView):
     def post(self, request):
         data = request.data
         payment_method_id = data.get('payment_id')
-        user = request.user
         event = Event.objects.get(id=data.get('event'))
 
-        if payment_method_id == "test":
-            payment_method = stripe.PaymentMethod.create(
-                type="card",
-                card={
-                    "number": "4242424242424242",
-                    "exp_month": 9,
-                    "exp_year": 2022,
-                    "cvc": "314",
-                },
-            )
-            payment_method_id = payment_method.id
-
-        customer_data = stripe.Customer.list(email=user.email).data
-        if len(customer_data) == 0:
-            customer = stripe.Customer.create(
-                email=user.email,
-                payment_method=payment_method_id
-            )
-        else:
-            customer = customer_data[0]
-            extra_msg = "Customer already exists."
-        print("Stripe done")
         amount = int(data.get('amount'))
         booking = Booking.objects.create(user=request.user, amount=amount, event=event)
         print("Booking done")
+        token_id = data.get('token_id')
         tickets = data.get('tickets')
         for ticket_data in tickets:
             ticket_type = TicketType.objects.get(id=ticket_data['ticket_type'])
@@ -73,7 +51,7 @@ class BookingView(APIView):
                 ticket_type.available_quantity -= 1
                 ticket_type.save()
                 ticket_obj = Ticket.objects.create(
-                    ticket_type=ticket_type, booking=booking, user=request.user)
+                    ticket_type=ticket_type, booking=booking, user=request.user, token_id=token_id)
                 addons = ticket_data['addons']
                 for addon in addons:
                     add_on = AddOn.objects.get(id=addon['add_on'])

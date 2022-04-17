@@ -90,7 +90,6 @@ const MyCheckoutForm = (props) => {
           `${API_BASE_URL}/orders/bookings`,
           {
             body: JSON.stringify({
-              payment_id: token,
               event: props.event.id,
               amount: props.total,
               tickets: tickets
