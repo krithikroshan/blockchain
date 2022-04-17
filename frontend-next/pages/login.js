@@ -135,7 +135,7 @@ function Login() {
                   color: "white",
                 }}
               >
-                Login
+                Connect Wallet
               </Button>
             </Form.Item>
           </Form>
