@@ -60,7 +60,7 @@ export default function TicketCard({ ticket, order }) {
         {order.event.start_date + ", " + order.event.start_time.slice(0, 5)}
       </div>
       <div style={{ paddingTop: "12px" }}>
-        <Tag color="blue">x {order.booking_tickets.length} Ticket(s)</Tag>
+        <Tag color="blue">{order.booking_tickets[0].ticket_type.name} Ticket</Tag>
         {/* Ticket Retrieval Status */}
         {/* {!ticket.retreived ? (
               <Tag color="red">Unretreived Ticket</Tag>
