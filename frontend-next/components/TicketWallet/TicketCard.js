@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, Button } from "antd";
 import { Tag } from "antd";
+import { InputNumber } from 'antd';
 import Image from "next/image";
 import RetreiveTicketModal from "./RetreiveTicketModal";
 import AddonInfoModal from "./AddonInfoModal";
@@ -11,11 +12,18 @@ export default function TicketCard({ ticket, order }) {
   const [aggTickets, setAggTickets] = useState({});
   const [aggAddons, setAggAddons] = useState({});
 
+  const [price, setPrice] = useState(1)
+
   useEffect(() => {
     var { _aggTickets, _aggAddons } = aggTicketsAndAddons();
     setAggTickets(_aggTickets);
     setAggAddons(_aggAddons);
   }, []);
+
+  function onChange(value) {
+    console.log('changed', value);
+    setPrice(value)
+  }
 
   function aggTicketsAndAddons() {
     var _aggTickets = {};
@@ -60,6 +68,9 @@ export default function TicketCard({ ticket, order }) {
         {order.event.start_date + ", " + order.event.start_time.slice(0, 5)}
       </div>
       <div style={{ paddingTop: "12px" }}>
+        {order.booking_tickets[0].token_id.slice(0, 30)}...
+      </div>
+      <div style={{ paddingTop: "12px" }}>
         <Tag color="blue">{order.booking_tickets[0].ticket_type.name} Ticket</Tag>
         {/* Ticket Retrieval Status */}
         {/* {!ticket.retreived ? (
@@ -70,7 +81,16 @@ export default function TicketCard({ ticket, order }) {
       </div>
       <div style={{ paddingTop: "12px" }}>
         <div style={{ paddingRight: "5px", display: "inline-block" }}>
-          <Button onClick={resellTicket} type="primary">
+        <InputNumber
+          defaultValue="1"
+          min="0"
+          max="10"
+          style={{ width: 100 }}
+          step="0.005"
+          onChange={onChange}
+          stringMode
+        />
+          <Button onClick={resellTicket} type="primary" style={{marginLeft:10}}>
             Resell Ticket
           </Button>
         </div>

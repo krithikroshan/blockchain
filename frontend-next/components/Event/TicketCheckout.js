@@ -179,7 +179,7 @@ function TicketCheckout({
           <span className={styles.checkouttitle}>Payment information</span>
           <span className={styles.checkoutsubtitle}>Credit or debit card</span>
           <Button onClick={() => buyNft("0.5")} loading={minting}>
-            {minting ? "Buy Now" : "Minting NFT ticket"}
+            {minting ? "Minting NFT ticket" : "Buy Now"}
           </Button>
         </div>
         {/* <Elements stripe={stripePromise}>
