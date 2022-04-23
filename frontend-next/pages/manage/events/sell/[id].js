@@ -248,7 +248,7 @@ export default function SellTicket({event, tickets}) {
                                     <hr/>
                                     <p style={{color: '#333', letterSpacing: 1.25}}>
                                         Original price:
-                                        <span style={{float:'right'}}>${selectedTicket?.price}</span>
+                                        <span style={{float:'right'}}>ETH{selectedTicket?.price}</span>
                                     </p>
                                     <p style={{color: '#333', letterSpacing: 1.25}}>
                                         Royalties:

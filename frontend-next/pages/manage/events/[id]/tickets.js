@@ -129,7 +129,7 @@ export default function Tickets(event) {
       )
       .then((res) => {
         console.log(res);
-        listNFTForSale("100")
+        // listNFTForSale("100")
       });
     // }).catch(err => console.log("err", err))
   };

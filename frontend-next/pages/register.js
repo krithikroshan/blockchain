@@ -43,7 +43,7 @@ function Registration() {
   return (
     <>
       <div style={{ paddingTop: 60 }}>
-        <h3 style={{ textAlign: "center" }}>Access</h3>
+        <h3 style={{ textAlign: "center" }}>Chainsmokers</h3>
         <Card style={{ width: 540, margin: "auto" }}>
           {/* <div style={{ margin: "auto", width: "100%" }}>
             <GoogleLogin

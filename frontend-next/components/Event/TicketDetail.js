@@ -20,7 +20,7 @@ function TicketDetail({ ticket, onSelect }) {
           onChange={onChange}
         />
         <span className={styles.ticketname}>{ticket.name}</span>
-        <span className={styles.ticketprice}>${ticket.price}</span>
+        <span className={styles.ticketprice}>ETH{ticket.price}</span>
       </div>
       <span className={styles.ticketend}>
         Sales end on {dayjs(ticket.sale_end).format("D MMM YYYY")}

@@ -4,6 +4,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useSelector, useDispatch } from "react-redux";
 import allActions from "../../redux/actions/index";
+import { create as ipfsHttpClient } from 'ipfs-http-client'
 import styles from "../../styles/Event.module.css";
 import MyCheckoutForm from "./MyCheckoutForm";
 import Web3Modal from "web3modal";
@@ -18,6 +19,7 @@ import axios from "axios";
 const stripePromise = loadStripe(
   "pk_test_51J6zloLkmGdhw5ZB6E6ktgMavvmdoVQWb3luZrABDPmBouMLgtApzAX2k2RTFJEpw2OYOkNHv8YBu6elZAovz0Mr00fEDaZlGZ"
 );
+const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
 function TicketCheckout({
   event,
@@ -62,18 +64,18 @@ function TicketCheckout({
   }, [currentTickets, currentAddons]);
 
   async function uploadToIPFS() {
-    const { name, description, price } = formInput;
-    if (!name || !description || !price || !fileUrl) return;
+
     /* first, upload to IPFS */
     const data = JSON.stringify({
-      name,
-      description,
-      image: fileUrl,
+      event: event,
+      ticket: tickets[0],
+      image: event.image,
     });
     try {
       const added = await client.add(data);
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
       /* after file is uploaded to IPFS, return the URL to use it in the transaction */
+      console.log(url)
       return url;
     } catch (error) {
       console.log("Error uploading file: ", error);
@@ -82,7 +84,7 @@ function TicketCheckout({
 
   async function buyNft(val) {
     setMinting(true);
-    // const url = await uploadToIPFS()
+    const url = await uploadToIPFS()
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
@@ -97,7 +99,7 @@ function TicketCheckout({
     );
     let listingPrice = await contract.getListingPrice();
     listingPrice = listingPrice.toString();
-    let transaction = await contract.createToken("", price, {
+    let transaction = await contract.createToken(url, price, {
       value: listingPrice,
     });
     await transaction.wait();
@@ -177,8 +179,7 @@ function TicketCheckout({
           </Form>
 
           <span className={styles.checkouttitle}>Payment information</span>
-          <span className={styles.checkoutsubtitle}>Credit or debit card</span>
-          <Button onClick={() => buyNft("0.5")} loading={minting}>
+          <Button primary onClick={() => buyNft("0.5")} loading={minting}>
             {minting ? "Minting NFT ticket" : "Buy Now"}
           </Button>
         </div>

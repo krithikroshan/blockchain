@@ -16,7 +16,7 @@ export default function Index() {
         if(currentUser.loggedIn){
             axios.get(`${API_BASE_URL}/events/user/me`, {headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+ currentUser.user.access_token
+                // 'Authorization': 'Bearer '+ currentUser.user.access_token
               }})
               .then(res => setEvents(res.data))
               .catch(err => console.log(err))

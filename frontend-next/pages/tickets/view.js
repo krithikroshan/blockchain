@@ -14,6 +14,36 @@ export default function ViewTickets({ orderDetails }) {
   const router = useRouter(orderDetails);
   const [orders, setOrders] = useState([]);
 
+    async function loadNFTs() {
+    const web3Modal = new Web3Modal({
+      network: "ropsten",
+      cacheProvider: true,
+    })
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+
+    const marketplaceContract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
+    const data = await marketplaceContract.fetchMyNFTs()
+
+    const items = await Promise.all(data.map(async i => {
+      const tokenURI = await marketplaceContract.tokenURI(i.tokenId)
+      const meta = await axios.get(tokenURI)
+      let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
+      let item = {
+        price,
+        tokenId: i.tokenId.toNumber(),
+        seller: i.seller,
+        owner: i.owner,
+        image: meta.data.image,
+        tokenURI
+      }
+      return item
+    }))
+    setNfts(items)
+    setLoadingState('loaded') 
+  }
+
   useEffect(() => {
     getOrderDetails();
   }, []);
@@ -37,6 +67,12 @@ export default function ViewTickets({ orderDetails }) {
         console.log(err);
       });
   }
+
+  useEffect(()=>{
+    if(1+1 == 3){
+      loadNfts()
+    }
+  })
 
   return (
     <Layout>

@@ -89,8 +89,8 @@ export default function Event({ event, tickets }) {
               <h4 className={styles.boxname}>{event.name}</h4>
               <p className={styles.boxpricing}>
                 {ticket_min === ticket_max
-                  ? "$" + ticket_min
-                  : "$" + ticket_min + " - " + "$" + ticket_max}
+                  ? "ETH" + ticket_min
+                  : "ETH" + ticket_min + " - " + "$" + ticket_max}
               </p>
             </Col>
           </Row>

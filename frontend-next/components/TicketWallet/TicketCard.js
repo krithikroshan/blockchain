@@ -5,6 +5,12 @@ import { InputNumber } from 'antd';
 import Image from "next/image";
 import RetreiveTicketModal from "./RetreiveTicketModal";
 import AddonInfoModal from "./AddonInfoModal";
+import Link from "next/link";
+import { ethers } from "ethers";
+import Web3Modal from 'web3modal'
+import { marketplace_address } from "../../constants/apiConstants";
+import NFTMarketplace from '../../artifacts/contracts/NFTMarketplace.sol/NFTMarketplace.json'
+
 
 const { Meta } = Card;
 
@@ -47,7 +53,25 @@ export default function TicketCard({ ticket, order }) {
     return { _aggTickets, _aggAddons };
   }
 
-  const resellTicket = () => {}
+  var blockUrl = "https://ropsten.etherscan.io/tx/"+order.booking_tickets[0].token_id
+
+  async function resellTicket() {
+    // if (!price) return
+    // const web3Modal = new Web3Modal()
+    // const connection = await web3Modal.connect()
+    // const provider = new ethers.providers.Web3Provider(connection)
+    // const signer = provider.getSigner()
+
+    // const priceFormatted = ethers.utils.parseUnits(price.toString(), 'ether')
+    // let contract = new ethers.Contract(marketplace_address, NFTMarketplace.abi, signer)
+    // let listingPrice = await contract.getListingPrice()
+
+    // listingPrice = listingPrice.toString()
+    // let transaction = await contract.resellToken(order.booking_tickets[0].token_id, priceFormatted, { value: listingPrice })
+    // await transaction.wait()
+   
+    // router.push('/')
+  }
   return (
     <Card
       style={{ width: 300 }}
@@ -68,7 +92,9 @@ export default function TicketCard({ ticket, order }) {
         {order.event.start_date + ", " + order.event.start_time.slice(0, 5)}
       </div>
       <div style={{ paddingTop: "12px" }}>
+      {/* <Link href={blockUrl} >
         {order.booking_tickets[0].token_id.slice(0, 30)}...
+      </Link> */}
       </div>
       <div style={{ paddingTop: "12px" }}>
         <Tag color="blue">{order.booking_tickets[0].ticket_type.name} Ticket</Tag>

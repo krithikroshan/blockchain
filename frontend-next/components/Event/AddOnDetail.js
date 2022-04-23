@@ -53,7 +53,7 @@ function AddOnDetail({ addon, ticket, commonAddons, seperatedTicketId }) {
               onChange={onChange}
             />
             <span className={styles.ticketname}>{addon.name}</span>
-            <span className={styles.ticketprice}>${addon.price}</span>
+            <span className={styles.ticketprice}>ETH{addon.price}</span>
             <Radio.Group
               options={options}
               onChange={(e) => setSelAddons(e.target.value)}

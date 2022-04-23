@@ -47,7 +47,7 @@ function Login() {
     <>
       <div style={{ paddingTop: 60 }}>
         <Link href="/" passHref>
-          <h3 style={{ textAlign: "center" }}>Access</h3>
+          <h3 style={{ textAlign: "center" }}>Chainsmokers</h3>
         </Link>
         {query.redirect ? (
           <p style={{ textAlign: "center" }}>

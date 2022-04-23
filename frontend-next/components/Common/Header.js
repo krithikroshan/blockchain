@@ -4,14 +4,13 @@ import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import allActions from "../../redux/actions";
 import Link from "next/link";
-import { capitalizeFirstLetter } from "../../helper_functions/StringOperations"
+import { capitalizeFirstLetter } from "../../helper_functions/StringOperations";
 import styles from "../../styles/Header.module.css";
 import Wallet from "./Wallet";
 import { ethers } from "ethers";
 import TokenService from "../services/token.service";
 import axios from "axios";
 import { getERC20TokenBalance } from "../ethers_helpers/GetTokenBalance";
-
 
 function Header() {
   const [loading, setLoading] = useState(true);
@@ -30,9 +29,7 @@ function Header() {
   useEffect(() => {
     if (currentUser.loggedIn) {
       var name =
-        capitalizeFirstLetter(currentUser.user.user.first_name) +
-        " " +
-        capitalizeFirstLetter(currentUser.user.user.last_name);
+        currentUser.user.wallet_address
       setUser(name);
     } else {
       setUser(null);
@@ -50,7 +47,7 @@ function Header() {
 
   const connectWalletHandler = () => {
     if (window.ethereum && defaultAccount == null) {
-      console.log("hello")
+      console.log("hello");
       // set ethers provider
       setProvider(new ethers.providers.Web3Provider(window.ethereum));
 
@@ -60,7 +57,7 @@ function Header() {
         .then((result) => {
           setConnButtonText("Wallet Connected");
           setDefaultAccount(result[0]);
-          console.log(result[0])
+          console.log(result[0]);
         })
         .catch((error) => {
           setErrorMessage(error.message);
@@ -72,12 +69,12 @@ function Header() {
   };
 
   const loginHandler = async () => {
-    console.log("h1")
+    console.log("h1");
     if (window.ethereum && window.ethereum.isMetaMask && defaultAccount) {
-        console.log("h2")
-        var url =
-          "http://localhost:8000/users/wallet/connect?wallet_address=" +
-          defaultAccount;
+      console.log("h2");
+      var url =
+        "http://localhost:8000/users/wallet/connect?wallet_address=" +
+        defaultAccount;
       axios.get(url).then((res) => {
         console.log("MetaMask Here!");
         const signer = provider.getSigner();
@@ -91,6 +88,8 @@ function Header() {
               console.log(res.data);
               setUser(res.data.wallet_address);
               TokenService.setUser(res.data);
+              localStorage.setItem("userInfo", JSON.stringify(res.data));
+              dispatch(allActions.userActions.setUser(res.data));
             })
             .catch((err) => console.log(err));
         });
@@ -103,7 +102,7 @@ function Header() {
 
   useEffect(() => {
     if (defaultAccount) {
-      loginHandler()
+      loginHandler();
       provider.getBalance(defaultAccount).then((balanceResult) => {
         setUserBalance(ethers.utils.formatEther(balanceResult));
       });
@@ -126,7 +125,7 @@ function Header() {
       <Navbar bg="light" variant="light">
         <Container>
           <Link href="/" passHref>
-            <Navbar.Brand>Access</Navbar.Brand>
+            <Navbar.Brand>Chainsmokers</Navbar.Brand>
           </Link>
           <Nav>
             {/* <Link href="/manage/events/create" passHref>
@@ -137,7 +136,7 @@ function Header() {
             <Link href="/tickets/view" passHref>
               <Nav.Link>
                 <i className="fas fa-shopping-cart pr-1"></i> My Tickets
-              </Nav.Link> 
+              </Nav.Link>
             </Link>
             {!loading && !user ? (
               // <Link href="/login" passHref>
